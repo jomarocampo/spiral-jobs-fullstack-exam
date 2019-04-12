@@ -1,4 +1,10 @@
-import { Controller} from '@nestjs/common';
+import { Controller, Get, Body, ValidationPipe, UseGuards, Query, Param, Patch, Delete, Post } from '@nestjs/common';
+import { executeTasks } from './../app.util';
+import { IPAddress, UserRequestTime, UserName } from './../decorators/user.decorator';
+import { Authentication } from './../app.authentication';
+import { UserActions } from './user.actions';
+import { UserValidations } from './user.validations';
+import { UserUpdateDto, UserCreateDto, UserBatchDeleteDto } from './user.dto';
 
 @Controller('admin/user')
 export class UserController {
@@ -10,7 +16,7 @@ export class UserController {
 
   @Get()
   @UseGuards(Authentication)
-  async list(
+  async findAll(
     @IPAddress() ip_address,
     @UserRequestTime() request_time,
     @UserName() user_name,
@@ -60,9 +66,9 @@ export class UserController {
     };
   }
 
-  @Post('id')
-  // @UseGuards(Authentication)
-  async id_create(
+  @Post()
+  @UseGuards(Authentication)
+  async create(
     @Body(new ValidationPipe()) dto: UserCreateDto,
     @IPAddress() ip_address,
     @UserRequestTime() request_time,
@@ -81,7 +87,9 @@ export class UserController {
       this.assertions.assert_email_is_available_sans_id_check,
       this.actions.create_user,
     ], Object.assign(dto, {
-        user_name,
+        user: {
+          name: user_name
+        },
         ip_address,
       },
     ));
@@ -94,12 +102,10 @@ export class UserController {
     };
   }
 
-  @Get('id/:id')
-  // @UseGuards(Authentication)
-  async id(
+  @Get(':id')
+  @UseGuards(Authentication)
+  async findOne(
     @IPAddress() ip_address,
-    @UserRequestTime() request_time,
-    @UserName() user_name,
     @Param('id') params_id,
   ) {
 
@@ -126,9 +132,9 @@ export class UserController {
     };
   }
 
-  @Patch('id/:id')
-  // @UseGuards(Authentication)
-  async id_patch(
+  @Patch(':id')
+  @UseGuards(Authentication)
+  async patch(
     @Body(new ValidationPipe()) dto: UserUpdateDto,
     @IPAddress() ip_address,
     @UserRequestTime() request_time,
@@ -155,7 +161,9 @@ export class UserController {
       this.actions.update_user,
     ], Object.assign(dto, {
         params_id,
-        user_name,
+        user: {
+          name: user_name,
+        },
         ip_address,
       }));
 
@@ -168,11 +176,10 @@ export class UserController {
     };
   }
 
-  @Delete('data/id/:id')
-  // @UseGuards(Authentication)
-  async id_delete(
+  @Delete(':id')
+  @UseGuards(Authentication)
+  async delete(
     @IPAddress() ip_address,
-    @UserRequestTime() request_time,
     @UserName() user_name,
     @Param('id') params_id,
   ) {
@@ -189,7 +196,9 @@ export class UserController {
       this.actions.update_user_to_deleted,
     ], {
         params_id,
-        user_name,
+        user: {
+          name: user_name,
+        },
         ip_address,
       });
 

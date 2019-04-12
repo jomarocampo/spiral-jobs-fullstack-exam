@@ -9,7 +9,7 @@ export class UserActions {
 
   async cache_user(dto: any, tasks_data: Map<string, any>): Promise<void> {
 
-    const user = getConnection().getRepository(User).findOne({
+    const user = await getConnection().getRepository(User).findOne({
         where: {
             id: parseInt(dto.params_id, 10),
         }
@@ -83,11 +83,6 @@ export class UserActions {
     // get user
     const user = tasks_data.get('user') as User;
 
-    // get logged in user
-    const session_user = await getConnection().getRepository(User).findOne({
-      where: { id: dto.user_id },
-    });
-
     // update properties
     user.email = dto.email ? dto.email : user.email;
     user.name = dto.name ? dto.name : user.name;
@@ -95,7 +90,7 @@ export class UserActions {
     user.is_deleted = dto.is_deleted ? dto.is_deleted : user.is_deleted;
 
     // update metadata
-    user.modified_by = session_user.name;
+    user.modified_by = dto.user.name;
     user.modified_date = new Date();
 
     // save update
@@ -112,16 +107,11 @@ export class UserActions {
     // get user
     const user = tasks_data.get('user') as User;
 
-    // get logged in user
-    const session_user = await getConnection().getRepository(User).findOne({
-      where: { id: dto.user_id },
-    });
-
     // update properties
     user.is_deleted = true;
 
     // update metadata
-    user.modified_by = session_user.name;
+    user.modified_by = dto.user.name;
     user.modified_date = new Date();
 
     // commit to database
@@ -134,11 +124,6 @@ export class UserActions {
     const user_repo = getConnection().getRepository(User);
     const user = user_repo.create();
 
-    // get logged in user
-    const session_user = await getConnection().getRepository(User).findOne({
-      where: { id: dto.user_id },
-    });
-
     // update properties
     user.email = dto.email;
     user.name = dto.name;
@@ -149,9 +134,9 @@ export class UserActions {
     user.is_deleted = false;
 
     // update metadata
-    user.modified_by = session_user.name;
+    user.modified_by = dto.user.name;
     user.modified_date = new Date();
-    user.created_by = session_user.name;
+    user.created_by = dto.user.name;
     user.created_date = new Date();
 
     // save update
@@ -172,7 +157,7 @@ export class UserActions {
 
     await getConnection().createQueryBuilder()
       .update(User)
-      .set({ is_deleted: true, modified_by: session_user.name })
+      .set({ is_deleted: true, modified_by: dto.user.name })
       .where('id IN (:...ids)', { ids: dto.ids })
       .execute();
 
