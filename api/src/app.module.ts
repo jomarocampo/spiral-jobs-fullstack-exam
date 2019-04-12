@@ -7,6 +7,8 @@ import { LoginController } from './login/login.controller';
 import { LoginValidations } from './login/login.validations';
 import { LoginActions } from './login/login.actions';
 import { UserController } from './user/user.controller';
+import { UserValidations } from './user/user.validations';
+import { UserActions } from './user/user.actions';
 
 @Module({
   imports: [
@@ -21,7 +23,9 @@ import { UserController } from './user/user.controller';
     RegisterValidations,
     RegisterActions,
     LoginValidations,
-    LoginActions
+    LoginActions,
+    UserValidations,
+    UserActions
   ],
 })
 export class AppModule {}

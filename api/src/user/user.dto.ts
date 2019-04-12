@@ -1,49 +1,49 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsOptional, IsDefined, IsString, IsNotEmpty, IsBoolean, IsIn, IsInt, IsArray } from 'class-validator';
 
-export class CreateUserDto {
-    @IsString()
-    @IsNotEmpty()
-    readonly name: string;
+export class UserUpdateDto {
 
-    @IsString()
-    @IsNotEmpty()
-    readonly email: string;
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  readonly email: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly username: string;
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  readonly name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly password: string;
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  readonly password: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly confirm_password: string;
+  @IsBoolean()
+  @IsOptional()
+  @IsNotEmpty()
+  readonly is_deleted: boolean;
 }
 
-export class UpdateUserDto {
-    @IsString()
-    @IsNotEmpty()
-    readonly name: string;
+export class UserCreateDto {
 
-    @IsString()
-    @IsNotEmpty()
-    readonly email: string;
+  @IsString()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly email: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly username: string;
+  @IsString()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly name: string;
 
-    @IsString()
-    @IsNotEmpty()
-    readonly password: string;
-
-    @IsString()
-    @IsNotEmpty()
-    readonly confirm_password: string;
+  @IsString()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly password: string;
 }
 
-export class ListAllEntities {
-    readonly limit: number;
+export class UserBatchDeleteDto {
+
+  @IsArray()
+  @IsDefined()
+  readonly ids: number[];
 }
