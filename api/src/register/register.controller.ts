@@ -20,7 +20,7 @@ export class RegisterController {
         const result = await executeTasks([
             this.validations.validate_email_is_valid_format,
             this.validations.validate_confirm_password_is_match,
-            this.validations.validate_confirm_password_is_match,
+            this.validations.validate_email_is_available,
             this.actions.create,
         ], dto);
 

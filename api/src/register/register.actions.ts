@@ -11,11 +11,6 @@ export class RegisterActions {
     const user_repo = getConnection().getRepository(User);
     const user = user_repo.create();
 
-    // get logged in user
-    const session_user = await getConnection().getRepository(User).findOne({
-      where: { id: dto.user_id },
-    });
-
     // update properties
     user.name = dto.name;
     user.email = dto.email;

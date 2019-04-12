@@ -23,14 +23,14 @@ export class RegisterValidations {
 
   async validate_email_is_available(dto: any, tasks_data: Map<string, any>): Promise<void> {
 
-    const user_with_same_email = await getConnection().getRepository(User).findOne({
+    const user = await getConnection().getRepository(User).findOne({
       where: {
         email: dto.email,
       },
     });
 
     // make sure updated email is not currently being used
-    if (user_with_same_email && user_with_same_email.id !== parseInt(dto.params_id, 10)) {
+    if (user && user.id !== parseInt(dto.params_id, 10)) {
       throw new BadRequestException(RegisterExceptions.EmailAlreadyUsed, { });
     }
     return Promise.resolve();

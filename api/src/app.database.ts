@@ -5,17 +5,23 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 
 const connect = async () => {
-  console.log(DatabaseConfig)
+
   try {
-    // create connection
-    await createConnection(DatabaseConfig as any);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // check connection
+    getConnection();
   }
-  catch (e) {
-    // tslint:disable-next-line:no-console
-    console.log(e);
-    await new Promise(resolve => setTimeout(resolve, 10000));
-    await connect();
+  catch(err) {
+    try {
+      // create connection
+      await createConnection(DatabaseConfig as any);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    catch (e) {
+      // tslint:disable-next-line:no-console
+      console.log(e);
+      await new Promise(resolve => setTimeout(resolve, 10000));
+      await connect();
+    }
   }
 };
 

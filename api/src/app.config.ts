@@ -1,3 +1,4 @@
+import { User } from './entities/user.entity';
 
 export const DatabaseConfig = {
     name: 'default',
@@ -9,7 +10,7 @@ export const DatabaseConfig = {
     password: (process.env.DB_PASSWORD, 'P@ssword123'),
     synchronize: true,
     entities: [
-        // __dirname + '/**/ */**/*.entity{.ts,.js}',
-        'src/**/*.entity{.ts,.js}',
+        // __dirname + '/*/**/*.entity{.ts,.js}',
+        User
     ],
 };  
