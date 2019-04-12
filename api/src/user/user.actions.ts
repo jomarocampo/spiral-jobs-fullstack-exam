@@ -102,13 +102,30 @@ export class UserActions {
     return Promise.resolve();
   }
 
-  async update_user_to_deleted(dto: any, tasks_data: Map<string, any>): Promise<void> {
+  async delete(dto: any, tasks_data: Map<string, any>): Promise<void> {
 
     // get user
     const user = tasks_data.get('user') as User;
 
     // update properties
     user.is_deleted = true;
+
+    // update metadata
+    user.modified_by = dto.user.name;
+    user.modified_date = new Date();
+
+    // commit to database
+    await getConnection().getRepository(User).save(user);
+    return Promise.resolve();
+  }
+
+  async restore_user(dto: any, tasks_data: Map<string, any>): Promise<void> {
+
+    // get user
+    const user = tasks_data.get('user') as User;
+
+    // update properties
+    user.is_deleted = false;
 
     // update metadata
     user.modified_by = dto.user.name;
@@ -150,14 +167,20 @@ export class UserActions {
 
   async batch_delete(dto: any, tasks_data: Map<string, any>): Promise<void> {
 
-     // get logged in user
-    const session_user = await getConnection().getRepository(User).findOne({
-        where: { id: dto.user_id },
-    });
-
     await getConnection().createQueryBuilder()
       .update(User)
       .set({ is_deleted: true, modified_by: dto.user.name })
+      .where('id IN (:...ids)', { ids: dto.ids })
+      .execute();
+
+    return Promise.resolve();
+  }
+
+  async batch_restore(dto: any, tasks_data: Map<string, any>): Promise<void> {
+
+    await getConnection().createQueryBuilder()
+      .update(User)
+      .set({ is_deleted: false, modified_by: dto.user.name })
       .where('id IN (:...ids)', { ids: dto.ids })
       .execute();
 

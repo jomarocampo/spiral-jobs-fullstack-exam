@@ -193,7 +193,40 @@ export class UserController {
     await executeTasks([
       this.assertions.assert_id_numeric,
       this.actions.cache_user,
-      this.actions.update_user_to_deleted,
+      this.actions.delete,
+    ], {
+        params_id,
+        user: {
+          name: user_name,
+        },
+        ip_address,
+      });
+
+    return {
+      data: {
+        result: 'ok',
+      },
+    };
+  }
+
+  @Get(':id/restore')
+  @UseGuards(Authentication)
+  async restore(
+    @IPAddress() ip_address,
+    @UserName() user_name,
+    @Param('id') params_id,
+  ) {
+
+    /*
+    * DELETE USER
+    * -> STEPS:
+    *  1.) validate id parameter
+    *  2.) update user deleted status
+    */
+    await executeTasks([
+      this.assertions.assert_id_numeric,
+      this.actions.cache_user,
+      this.actions.restore_user,
     ], {
         params_id,
         user: {
@@ -210,11 +243,10 @@ export class UserController {
   }
 
   @Post('batch_delete')
-  // @UseGuards(Authentication)
+  @UseGuards(Authentication)
   async batch_delete(
     @Body(new ValidationPipe()) dto: UserBatchDeleteDto,
     @IPAddress() ip_address,
-    @UserRequestTime() request_time,
     @UserName() user_name,
   ) {
 
@@ -226,7 +258,38 @@ export class UserController {
     const result = await executeTasks([
       this.actions.batch_delete,
     ], Object.assign(dto, {
-      user_name,
+      user: {
+        name: user_name,
+      },
+      ip_address,
+    }));
+
+    return {
+      data: {
+        result: 'ok',
+      },
+    };
+  }
+
+  @Post('batch_restore')
+  @UseGuards(Authentication)
+  async batch_restore(
+    @Body(new ValidationPipe()) dto: UserBatchDeleteDto,
+    @IPAddress() ip_address,
+    @UserName() user_name,
+  ) {
+
+    /*
+    * BATCH DELETE
+    * -> STEPS:
+    *  1.) restore items from dto.ids
+    */
+    const result = await executeTasks([
+      this.actions.batch_restore,
+    ], Object.assign(dto, {
+      user: {
+        name: user_name,
+      },
       ip_address,
     }));
 

@@ -12,6 +12,7 @@ export class LoginActions {
     const user = await getConnection().getRepository(User).findOne({
         where: {
           email: dto.email,
+          is_deleted: false,
         },
       });
 
