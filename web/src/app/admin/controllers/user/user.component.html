@@ -1,2 +1,116 @@
-<h1 class="">Users</h1>
-<a routerLink="/login">Logout</a>
+  
+<div class="user-list">
+    <mat-toolbar class="page-title">Users</mat-toolbar>
+      
+    <!-- Search Form -->
+    <form class="search-form">
+        <mat-form-field floatPlaceholder="never" class="search_options_container">
+            <mat-select 
+                panelClass="search_options" 
+                placeholder="Search by:" 
+                [(ngModel)]="data.filter_by"
+                name="search_by">
+                <mat-option 
+  search_options: UserSearchOptionsDef = [
+                    *ngFor="let option of search_options" 
+                    [value]="option.field">{{option.label}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="search">
+            <input 
+                matInput 
+                autocomplete="off" 
+                placeholder="Search" 
+                (keyup)="search_key_up.next($event)" 
+                name="data.filter_value" 
+                [(ngModel)]="data.filter_value" 
+                maxlength="250">
+            <mat-progress-spinner *ngIf="data.is_fetching"
+                class="search_spinner"
+                color="accent"
+                mode="indeterminate"
+                value="50"
+                diameter="20">
+            </mat-progress-spinner>
+        </mat-form-field>
+    </form>
+
+    <!-- Table Users List -->
+    <div class="table-wrapper">
+    
+        <!-- No Record Found -->
+        <mat-card class="no_results" 
+            *ngIf="users_data.result.length === 0" 
+            style="text-align:center;border-bottom: 1px solid #30373e; box-shadow:none;">
+            No Record Found.
+        </mat-card>
+
+        <!-- Table -->
+        <table class="list-table" mat-table
+            [dataSource]="users_data.result" 
+            *ngIf="users_data.result.length">
+          
+            <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef
+                    (click)="onSort('id');"> 
+                    <mat-icon *ngIf="data.order_id === 'ASC'">arrow_upward</mat-icon>
+                    <mat-icon *ngIf="data.order_id === 'DESC'">arrow_downward</mat-icon>
+                    ID
+                </th>
+                <td mat-cell *matCellDef="let item"> {{item.id}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef
+                    (click)="onSort('name');">  
+                    <mat-icon *ngIf="data.order_name === 'ASC'">arrow_upward</mat-icon>
+                    <mat-icon *ngIf="data.order_name === 'DESC'">arrow_downward</mat-icon>
+                    Name
+                </th>
+                <td mat-cell *matCellDef="let item"> {{item.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef
+                    (click)="onSort('email');">  
+                    <mat-icon *ngIf="data.order_email === 'ASC'">arrow_upward</mat-icon>
+                    <mat-icon *ngIf="data.order_email === 'DESC'">arrow_downward</mat-icon>
+                    Email
+                </th>
+                <td mat-cell *matCellDef="let item"> {{item.email}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="created_by">
+                <th mat-header-cell *matHeaderCellDef
+                    (click)="onSort('created_by');"> 
+                    <mat-icon *ngIf="data.order_created_by === 'ASC'">arrow_upward</mat-icon>
+                    <mat-icon *ngIf="data.order_created_by === 'DESC'">arrow_downward</mat-icon>
+                    Created By 
+                </th>
+                <td mat-cell *matCellDef="let item"> {{item.created_by}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="created_date">
+                <th mat-header-cell *matHeaderCellDef
+                    (click)="onSort('created_date');">
+                    <mat-icon *ngIf="data.order_created_date === 'ASC'">arrow_upward</mat-icon>
+                    <mat-icon *ngIf="data.order_created_date === 'DESC'">arrow_downward</mat-icon>
+                    Created Date 
+                </th>
+                <td mat-cell *matCellDef="let item"> {{item.created_date}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+            <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+
+        </table>
+
+    </div>
+
+    <!-- Pagination -->
+    <mat-paginator 
+        class="paginator" 
+        [pageSizeOptions]="[5, 10, 20, 50, 100, 200]" 
+        showFirstLastButtons></mat-paginator>
+
+</div>

@@ -1,27 +1,50 @@
 
 <div class="login-page">
 
-    <mat-toolbar>Login</mat-toolbar>
+        <mat-toolbar>Login</mat-toolbar>
+
+        <div class="content">
+
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input 
+                    type="email"
+                    #email
+                    matInput 
+                    placeholder=""
+                    name="email"
+                    [formControl]="form_controls.email"
+                    required
+                    (keyup)="onInput()">
+                    <mat-error *ngIf="form_controls.email.invalid">
+                        {{form_controls.email.hasError('required') ? 'Email is required.' : 
+                            ( this.form_controls.email.hasError('email') ? 'Not a valid email address.' : '')
+                        }}
+                    </mat-error>
+            </mat-form-field>
+            
+            <br />
+            
+            <mat-form-field>
+                <mat-label>Passwod</mat-label>
+                <input
+                    type="password"
+                    #password
+                    matInput 
+                    placeholder=""
+                    name="password"
+                    [formControl]="form_controls.password"
+                    required
+                    (keyup)="onInput()">
+                    <mat-error *ngIf="form_controls.password.invalid">{{'Password is required.'}}</mat-error>
+            </mat-form-field>
     
-    <div class="content">
-        <mat-form-field>
-            <mat-label>Email</mat-label>
-            <input matInput type="email" placeholder="Enter you email">
-            <mat-error>asdasd</mat-error>
-        </mat-form-field>
-        
-        <br />
-        
-        <mat-form-field>
-            <mat-label>Passwod</mat-label>
-            <input matInput type="password" placeholder="Enter your password">
-            <mat-hint>asdasd</mat-hint>
-        </mat-form-field>
-
-        <div class="btn-wrap">
-            <button mat-raised-button color="primary" class="login">Login</button>
+            <div class="btn-wrap">
+                <button 
+                    mat-raised-button color="primary" class="register"
+                    (click)="onSubmit()"
+                    [disabled]="!form_is_valid">Login</button>
+                <button mat-raised-button class="login" (click)="onRegister()">Register</button>
+            </div>
         </div>
-
-        <button mat-flat-button (click)="onRegister()">Register Now!</button>
     </div>
-</div>

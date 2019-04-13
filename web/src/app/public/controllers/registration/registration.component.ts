@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, Validators } from '@angular/forms';
-import { UserService } from '../../user/user.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
@@ -11,7 +11,6 @@ import { MatSnackBar } from '@angular/material';
 })
 export class RegistrationComponent implements OnInit {
 
-  hidepass = true;
   form_controls: any = {
     name: new FormControl('', [Validators.required]),
     email: new FormControl('', [Validators.required, Validators.email]),
@@ -23,7 +22,7 @@ export class RegistrationComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private service: UserService,
+    private service: AuthService,
     private snackBar: MatSnackBar) {}
 
   ngOnInit() {
@@ -58,22 +57,19 @@ export class RegistrationComponent implements OnInit {
     this.router.navigate(['login']);
   }
 
-  async onSubmit(email, password) {
+  async onSubmit() {
 
     if(!this.form_is_valid) {
       return;
     }
 
-    // payload
-    const payload = {
+    // http request
+    const response = await this.service.register({
       name: this.form_controls.name.value,
       email: this.form_controls.email.value,
       password: this.form_controls.password.value,
       confirm_password: this.form_controls.confirm_password.value,
-    };
-
-    // http request
-    const response = await this.service.register(payload);
+    });
 
     // check if has error
     if (response.error) {

@@ -1,0 +1,28 @@
+.user-list {
+    .search-form {
+        margin-top: 15px;
+        mat-form-field {
+            margin-right: 10px;
+        }
+        mat-progress-spinner {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    }
+    .table-wrapper {
+        width: 100%;
+        overflow-x: scroll;
+        table {
+            width: 100%;
+            th {
+                cursor: pointer;
+                mat-icon {
+                    font-size: 11px;
+                    height: 11px;
+                    width: 11px;
+                }
+            }
+        }
+    }
+}

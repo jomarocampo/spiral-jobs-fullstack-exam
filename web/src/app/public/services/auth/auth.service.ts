@@ -1,18 +1,36 @@
 import { Injectable } from '@angular/core';
 import * as axios from 'axios';
-import { environment } from '../../../environments/environment';
-import { UserLoginDef, UserRegistrationDef } from './user.interfaces';
+import { environment } from '../../../../environments/environment';
+import { LoginDef, RegistrationDef, AuthDef } from './auth.interfaces';
+import * as jwt_decode from "jwt-decode";
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class AuthService {
 
   STORAGE_KEY_ACCESS_TOKEN = 'token';
 
   constructor() { }
 
-  async register(payload?: UserRegistrationDef): Promise<any> {
+  get_token() {
+    return sessionStorage.getItem(this.STORAGE_KEY_ACCESS_TOKEN);
+  }
+
+  is_login() {
+    return this.get_token() ? true : false;
+  }
+  
+  get_auth_data(): AuthDef {
+    try{
+      return jwt_decode(this.get_token());
+  }
+  catch(Error){
+      return null;
+  }
+  }
+
+  async register(payload?: RegistrationDef): Promise<any> {
 
     return await axios.default.post(`${environment.api_url}/register`, {
       name: payload.name,
@@ -24,7 +42,7 @@ export class UserService {
     });
   }
 
-  async login(request?: UserLoginDef): Promise<any> {
+  async login(request?: LoginDef): Promise<any> {
 
     const response = await axios.default.post(`${environment.api_url}/login`, {
       email: request.email,
@@ -37,6 +55,7 @@ export class UserService {
       return Promise.resolve(response);
     } else {
       const token = response['data'].data.token;
+      sessionStorage.setItem(this.STORAGE_KEY_ACCESS_TOKEN, token);
       return Promise.resolve(response);
     }
   }
