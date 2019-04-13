@@ -1,0 +1,39 @@
+########################################################
+# Docker Compose File
+version: '3'
+
+########################################################
+# Local Network
+networks:
+  exam_net:
+    driver: bridge
+
+########################################################
+# Services
+services:
+
+  ########################################################
+  # Client (AngularJS)
+  client:
+    build:
+      context: ./web/
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+
+  ########################################################
+  # API (NestJS)
+  api:
+    build:
+      context: ./api/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks:
+      - exam_net
