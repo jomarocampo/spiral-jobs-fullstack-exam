@@ -1,4 +1,4 @@
-# Spinral Exam - Fullstack
+# Spiral Exam - Fullstack
 
 ## Backend
 - Node NestJS Framework - https://nestjs.com/
