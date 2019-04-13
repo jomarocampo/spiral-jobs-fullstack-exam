@@ -24,7 +24,7 @@
 # main database configuration
 export DB_HOST=localhost
 export DB_PORT=5432
-export DB_NAME=SkywalkerTools
+export DB_NAME=db_name
 export DB_USERNAME=db_username
 export DBE_PASSWORD=db_password
 
