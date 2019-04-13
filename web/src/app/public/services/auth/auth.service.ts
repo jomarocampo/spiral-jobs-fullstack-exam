@@ -24,10 +24,14 @@ export class AuthService {
   get_auth_data(): AuthDef {
     try{
       return jwt_decode(this.get_token());
+    }
+    catch(Error){
+        return null;
+    }
   }
-  catch(Error){
-      return null;
-  }
+
+  clear_sessio() {
+    sessionStorage.clear();
   }
 
   async register(payload?: RegistrationDef): Promise<any> {

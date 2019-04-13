@@ -1,4 +1,10 @@
 .user-list {
+    .page-title {
+        .logout {
+            position: absolute;
+            right: 20px;
+        }
+    }
     .search-form {
         margin-top: 15px;
         mat-form-field {

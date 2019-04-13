@@ -5,7 +5,8 @@ import { UserListPayloadDef, UserSearchOptionsDef, UserListDataResponseDef } fro
 import { Subject, of } from 'rxjs';
 import {debounceTime, delay, distinctUntilChanged, flatMap } from 'rxjs/operators';
 import { UserService } from './user.service';
-import { MatSnackBar, MatPaginator, PageEvent, MatDialog } from '@angular/material';
+import { MatSnackBar, MatPaginator, PageEvent } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user',
@@ -53,7 +54,7 @@ export class UserComponent implements OnInit {
     private authService: AuthService,
     private service: UserService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private router: Router
   ) { 
     this.user = this.authService.get_auth_data();
   }
@@ -162,13 +163,27 @@ export class UserComponent implements OnInit {
     }
   }
 
+  onLogout() {
+    this.authService.clear_sessio();
+    this.router.navigate(['login']);
+  }
+
   // Error SnackBar
   openSnackBar(error: string) {
+
+    this.checkUnauthorized(error);
+
     this.snackBar.open(error, 'OK', {
       duration: 2000,
       horizontalPosition: 'center',
       verticalPosition: 'top'
     });
+  }
+
+  checkUnauthorized(error) {
+    if(error.toLowerCase().indexOf('unauth') > -1) {
+      this.router.navigate(['login']);
+    }
   }
 
 }

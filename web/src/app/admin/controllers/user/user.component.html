@@ -1,6 +1,9 @@
   
 <div class="user-list">
-    <mat-toolbar class="page-title">Users</mat-toolbar>
+    <mat-toolbar class="page-title">
+        Users
+        <button mat-raised-button class="logout" (click)="onLogout()">Logout</button>
+    </mat-toolbar>
       
     <!-- Search Form -->
     <form class="search-form">
