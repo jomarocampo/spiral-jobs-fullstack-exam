@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from 'src/app/public/services/auth/auth.service';
 import { AuthDef } from 'src/app/public/services/auth/auth.interfaces';
 import { UserListPayloadDef, UserSearchOptionsDef, UserListDataResponseDef } from './user.interfaces';
 import { Subject, of } from 'rxjs';
 import {debounceTime, delay, distinctUntilChanged, flatMap } from 'rxjs/operators';
 import { UserService } from './user.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatPaginator, PageEvent } from '@angular/material';
 
 @Component({
   selector: 'app-user',
@@ -45,6 +45,9 @@ export class UserComponent implements OnInit {
     result: [],
     count: 0
   };
+  page_index = 0;
+  
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private authService: AuthService,
@@ -55,13 +58,29 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit() {
+
+    // search
     this.search_key_up
       .pipe(
         debounceTime(500),
         distinctUntilChanged(),
         flatMap(e => of(e).pipe(delay(250)))
       )
-      .subscribe(this.searchUser.bind(this));
+      .subscribe(() => {
+        this.page_index = 0;
+        this.data.pagination_end = (this.data.pagination_end - this.data.pagination_start) + 1;
+        this.data.pagination_start = 1;
+        
+        this.searchUser();
+      });
+
+      // pagination
+      this.paginator.page.subscribe((pageEvent: PageEvent) => {
+        this.page_index = pageEvent.pageIndex;
+        this.data.pagination_start = this.page_index === 0 ? 1 : (this.page_index * pageEvent.pageSize) + 1;
+        this.data.pagination_end = this.page_index === 0 ? pageEvent.pageSize : (this.data.pagination_start + pageEvent.pageSize) - 1;
+        this.searchUser();
+      });
   }
   
   async searchUser() {
@@ -90,7 +109,18 @@ export class UserComponent implements OnInit {
   async onSort(field) {
     // current sort
     const current_sort = this.data['order_'+field];
-    
+
+    // new sort
+    let new_sort = '';
+    switch (current_sort) {
+      case '':
+        new_sort = 'ASC'
+        break
+      case 'ASC':
+        new_sort = 'DESC'
+        break
+    }
+
     // reset
     this.data.order_id = '';
     this.data.order_name = '';
@@ -104,6 +134,10 @@ export class UserComponent implements OnInit {
     });
 
     await this.searchUser();
+  }
+
+  onPaginate(a) {
+    console.log(a);
   }
 
   // Error SnackBar
