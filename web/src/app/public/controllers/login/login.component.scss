@@ -1,0 +1,17 @@
+.login-page {
+    max-width: 500px;
+    margin: 20vh auto 0;
+    border: 1px solid #f5f5f5;
+    mat-toolbar {
+        text-align: center;
+    }
+    .content {
+        padding: 15px;
+        mat-form-field {
+            width: 100%;
+        }
+        .btn-wrap {
+            text-align: right;
+        }
+    }
+}

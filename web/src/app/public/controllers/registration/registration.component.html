@@ -1,2 +1,81 @@
-<h1 class="">Registration</h1>
-<a routerLink="/login">Cancel</a>
+
+<div class="register-page">
+
+        <mat-toolbar>Registration</mat-toolbar>
+        <p class="success_msg" *ngIf="is_registered">Registration Success.</p>
+        <div class="content">
+            <mat-form-field>
+                <mat-label>Name</mat-label>
+                <input
+                    type="text"
+                    #name
+                    matInput 
+                    placeholder=""
+                    name="name"
+                    [formControl]="form_controls.name"
+                    required
+                    (keyup)="onInput()">
+                    <mat-error *ngIf="form_controls.name.invalid">{{'Name is required.'}}</mat-error>
+            </mat-form-field>
+            
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input 
+                    type="email"
+                    #email
+                    matInput 
+                    placeholder=""
+                    name="email"
+                    [formControl]="form_controls.email"
+                    required
+                    (keyup)="onInput()">
+                    <mat-error *ngIf="form_controls.email.invalid">
+                        {{form_controls.email.hasError('required') ? 'Email is required.' : 
+                            ( this.form_controls.email.hasError('email') ? 'Not a valid email address.' : '')
+                        }}
+                    </mat-error>
+            </mat-form-field>
+            
+            <br />
+            
+            <mat-form-field>
+                <mat-label>Passwod</mat-label>
+                <input
+                    type="password"
+                    #password
+                    matInput 
+                    placeholder=""
+                    name="password"
+                    [formControl]="form_controls.password"
+                    required
+                    (keyup)="onInput()">
+                    <mat-error *ngIf="form_controls.password.invalid">{{'Password is required.'}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>Confirm Passwod</mat-label>
+                <input 
+                    type="password"
+                    #confirm_password
+                    matInput 
+                    placeholder=""
+                    name="confirm_password"
+                    [formControl]="form_controls.confirm_password"
+                    required
+                    (keyup)="onInput('confirm_password')">
+                    <mat-error *ngIf="form_controls.confirm_password.invalid">
+                            {{form_controls.confirm_password.hasError('required') ? 'Confirm password is required.' : 
+                            ( this.form_controls.confirm_password.hasError('not_match') ? 'Confirm password not match.' : '')
+                        }}
+                    </mat-error>
+            </mat-form-field>
+    
+            <div class="btn-wrap">
+                <button 
+                    mat-raised-button color="primary" class="register"
+                    (click)="onSubmit()"
+                    [disabled]="!form_is_valid">Register</button>
+                <button mat-raised-button class="login" (click)="onCancel()">Cancel</button>
+            </div>
+        </div>
+    </div>
