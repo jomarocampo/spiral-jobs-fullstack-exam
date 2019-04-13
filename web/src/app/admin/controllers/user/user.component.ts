@@ -5,7 +5,7 @@ import { UserListPayloadDef, UserSearchOptionsDef, UserListDataResponseDef } fro
 import { Subject, of } from 'rxjs';
 import {debounceTime, delay, distinctUntilChanged, flatMap } from 'rxjs/operators';
 import { UserService } from './user.service';
-import { MatSnackBar, MatPaginator, PageEvent } from '@angular/material';
+import { MatSnackBar, MatPaginator, PageEvent, MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-user',
@@ -39,7 +39,7 @@ export class UserComponent implements OnInit {
   search_key_up = new Subject<string>();
 
   // users list
-  columnsToDisplay = ['id', 'name', 'email', 'created_by', 'created_date'];
+  columnsToDisplay = ['id', 'name', 'email', 'created_by', 'created_date', 'actions-row'];
   users_data: UserListDataResponseDef = {
     error: '',
     result: [],
@@ -53,11 +53,15 @@ export class UserComponent implements OnInit {
     private authService: AuthService,
     private service: UserService,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog
   ) { 
     this.user = this.authService.get_auth_data();
   }
 
   ngOnInit() {
+
+    // by default get user list
+    this.searchUser();
 
     // search
     this.search_key_up
@@ -84,10 +88,6 @@ export class UserComponent implements OnInit {
   }
   
   async searchUser() {
-
-    if(!this.data.filter_by || !this.data.filter_value) {
-      return
-    }
 
     // show loading
     this.data.is_fetching = true;
@@ -136,8 +136,30 @@ export class UserComponent implements OnInit {
     await this.searchUser();
   }
 
-  onPaginate(a) {
-    console.log(a);
+  async onDelete(id, name) {
+
+    let confirm = window.confirm(`Are you sure yo want to delete "${name}" user?`);
+    if(confirm) {
+
+      // show loading
+      this.data.is_fetching = true;
+
+      // filter user
+      const response = await this.service.delete(id);
+
+      // hide loading
+      this.data.is_fetching = false;
+
+      // check if has error
+      if (response.error) {
+        this.openSnackBar(response.error);
+      }
+
+      alert(`"${name}" user has been deleted.`);
+
+      // refresh users list
+      this.searchUser();
+    }
   }
 
   // Error SnackBar

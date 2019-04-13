@@ -51,23 +51,11 @@ export class UserService {
     }
   }
 
-  async testing(payload?: UserListPayloadDef): Promise<any> {
+  async delete(id: number): Promise<any> {
 
-    return await axios.default.get(`${environment.api_url}/user`, {
+    return await axios.default.delete(`${environment.api_url}/admin/user/${id}`, {
         headers: {
           'Authorization': `Bearer ${this.authService.get_token()}`,
-        },
-        params: {
-            s: payload.pagination_start,
-            e: payload.pagination_end,
-            d: payload.is_deleted,
-            n: payload.filter_by === 'name' ? payload.filter_value : '',
-            ea: payload.filter_by === 'email' ? payload.filter_value : '',
-            order_id: payload.order_id ? payload.order_id : '',
-            order_n: payload.order_name ? payload.order_name : '',
-            order_ea: payload.order_email ? payload.order_email : '',
-            order_cb: payload.order_created_by ? payload.order_created_by : '',
-            order_c: payload.order_created_date ? payload.order_created_date : '',
         }
     }).catch(e => {
       return { error: e.response ? e.response.data.data.error_message : 'Unable to connect to server.' };

@@ -14,6 +14,7 @@ import {
   MatTableModule,
   MatCardModule,
   MatIconModule,
+  MatDialogModule,
 } from '@angular/material';
 
 @NgModule({
@@ -33,6 +34,7 @@ import {
     MatTableModule,
     MatCardModule,
     MatIconModule,
+    MatDialogModule,
   ],
   exports: [
     // Components
@@ -48,6 +50,7 @@ import {
     MatTableModule,
     MatCardModule,
     MatIconModule,
+    MatDialogModule,
   ],
 })
 export class MaterialModule { }
